@@ -1,0 +1,52 @@
+user www-data;
+worker_processes {{ NGINX_WORKER_PROCESSES|default("auto") }};
+pid /var/run/nginx.pid;
+include /etc/nginx/modules-enabled/*.conf;
+
+events {
+        worker_connections {{ NGINX_WORKER_CONNECTIONS|default("1024") }};
+        # multi_accept on;
+}
+
+http {
+        sendfile on;
+        tcp_nopush on;
+        tcp_nodelay on;
+        keepalive_timeout {{ KEEPALIVE_TIMEOUT }};
+        types_hash_max_size 2048;
+
+        # server_names_hash_bucket_size 64;
+        # server_name_in_redirect off;
+
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        ssl_protocols {{ NGINX_SSL_PROTOCOLOS|default("TLSv1 TLSv1.1 TLSv1.2") }}; # Dropping SSLv3, ref: POODLE
+        ssl_prefer_server_ciphers on;
+
+        access_log {{ NGINX_ACCESS_LOG|default("/dev/stdout") }};
+        error_log {{ NGINX_ERROR_LOGS|default("/dev/stderr") }};
+
+        gzip on;
+        gzip_vary on;
+        gzip_proxied any;
+        gzip_comp_level 6;
+        gzip_disable "msie6";
+        gzip_buffers 16 8k;
+        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+        {% if 'true' in NGINX_ENABLE_HTST %}
+        add_header Strict-Transport-Security "max-age={{ NGINX_HSTS_MAXAGE }}; includeSubDomains" always;
+        {% endif %}
+
+        {% if NGINX_ENABLE_CORS is defined and 'true' in NGINX_ENABLE_CORS %}
+        add_header 'Access-Control-Allow-Origin' {{ APACHE_CORS_ORIGIN|default("'*'") }};
+        add_header 'Access-Control-Allow-Methods' {{ APACHE_CORS_METHODS |default("'GET, POST, OPTIONS'") }};
+        {% endif %}
+
+
+        include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/sites-enabled/*;
+
+        server_tokens off;
+}

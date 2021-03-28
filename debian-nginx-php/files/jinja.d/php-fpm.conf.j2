@@ -1,0 +1,22 @@
+;;;;;;;;;;;;;;;;;;;;;
+; FPM Configuration ;
+;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;
+; Global Options ;
+;;;;;;;;;;;;;;;;;;
+
+[global]
+; Pid file
+; Note: the default prefix is /var
+pid = /var/run/php{{ PHP_VERSION }}-fpm.pid
+
+; Error log file
+; Note: the default prefix is /var
+; Default Value: log/php-fpm.log
+error_log = {{ PHPFPM_ERROR_LOG_PATH }}
+
+;;;;;;;;;;;;;;;;;;;;
+; Pool Definitions ;
+;;;;;;;;;;;;;;;;;;;;
+include=/etc/php/{{ PHP_VERSION }}/fpm/pool.d/*.conf

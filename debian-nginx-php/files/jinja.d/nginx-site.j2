@@ -1,0 +1,65 @@
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root {{ NGINX_DOCUMENTROOT }};
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        location ~ /\. {
+                access_log off;
+                log_not_found off; 
+                deny all;
+        }
+
+        location ~*  \.(jpg|jpeg|png|gif|ico|css|js)$ {
+                expires 5d;
+        }
+      
+        location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                {%- if PHPFPM_ENABLE_TCP == "true" %}
+                fastcgi_pass 127.0.0.1:{{ PHPFPM_TCP_PORT }}
+                {%- else %}
+                fastcgi_pass unix:/var/run/php{{ PHP_VERSION }}-fpm.sock;
+                {%- endif %}
+                fastcgi_index index.php;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    		fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+                include fastcgi_params;
+        }
+
+        location ~ ^{{ PHPFPM_STATUS_PATH|default("/fpm-status") }}$ {
+                access_log off;
+                allow 127.0.0.1;
+                allow 172.16.0.0/12;
+                deny all;
+                {%- if PHPFPM_ENABLE_TCP == "true" %}
+                fastcgi_pass 127.0.0.1:{{ PHPFPM_TCP_PORT }};
+                {%- else %}
+                fastcgi_pass unix:/var/run/php{{ PHP_VERSION }}-fpm.sock;
+                {%- endif %}
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                include fastcgi_params;
+        }
+
+        location  {{ NGINX_STATUS_PATH|default("/nginx-status") }} {
+                stub_status on;
+                access_log   off;
+                allow 127.0.0.1;
+                allow 172.16.0.0/12;
+                deny all;
+        }
+   
+
+        {% if 'true' in NGINX_ENABLE_HTST %}
+        add_header Strict-Transport-Security "max-age={{ NGINX_HSTS_MAXAGE }}; includeSubDomains" always;
+        {% endif %}
+
+}

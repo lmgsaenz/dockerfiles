@@ -1,0 +1,14 @@
+zend_extension=opcache.so
+{% if PHPFPM_ENABLE_OPCACHE is defined %}{% if 'true' in PHPFPM_ENABLE_OPCACHE %}
+opcache.enable=1
+opcache.enable_cli=1
+opcache.memory_consumption=32
+opcache.interned_strings_buffer=8
+opcache.max_accelerated_files=3000
+opcache.revalidate_freq=60
+opcache.validate_timestamps=1
+opcache.revalidate_path=0
+opcache.fast_shutdown=0
+{% else %}
+opcache.enable=0
+{% endif %} {% endif %} 
