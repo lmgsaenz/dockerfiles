@@ -10,13 +10,41 @@ events {
 
 http {
         sendfile on;
+
         tcp_nopush on;
         tcp_nodelay on;
-        keepalive_timeout {{ KEEPALIVE_TIMEOUT }};
-        types_hash_max_size 2048;
 
-        # server_names_hash_bucket_size 64;
-        # server_name_in_redirect off;
+        keepalive_timeout {{ KEEPALIVE_TIMEOUT }};
+        
+        {% if KEEPALIVE_REQUESTS is defined %}
+        keepalive_requests {{ KEEPALIVE_REQUESTS }};
+        {% endif %}
+
+        {% if CLIENT_BODY_BUFFER_SIZE is defined %}
+        client_body_buffer_size {{ CLIENT_BODY_BUFFER_SIZE }};
+        {% endif %}
+
+        {% if CLIENT_MAX_BODY_SIZE is defined %}
+        client_max_body_size {{ CLIENT_MAX_BODY_SIZE }};
+        {% endif %}
+
+        {% if CLIENT_HEADER_BUFFER_SIZE is defined %}
+        client_header_buffer_size {{ CLIENT_HEADER_BUFFER_SIZE }};
+        {% endif %}
+
+        {% if CLIENT_HEADER_TIMEOUT is defined %}
+        client_header_timeout {{ CLIENT_HEADER_TIMEOUT }};
+        {% endif %}
+        
+        {% if CLIENT_BODY_TIMEOUT is defined %}
+        client_body_timeout {{ CLIENT_BODY_TIMEOUT }};
+        {% endif %}
+
+        {% if SEND_TIMEOUT is defined %}
+        send_timeout {{ SEND_TIMEOUT }};
+        {% endif %}
+
+        types_hash_max_size {{ TYPES_HASH_MAX_SIZE|default("2048") }};
 
         include /etc/nginx/mime.types;
         default_type application/octet-stream;

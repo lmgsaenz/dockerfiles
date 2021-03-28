@@ -36,6 +36,7 @@ ENV \
     NGINX_ENABLE_HTST="true"                \
     NGINX_HSTS_MAXAGE="4838400"             \
     NGINX_STATUS_PATH="/nginx-status"       \
+    CLIENT_MAX_BODY_SIZE="32M"              \
     PHPFPM_ENABLE_TCP="false"               \
     PHPFPM_TCP_PORT="9000"                  \
     PHP_MAX_EXEC_TIME="60"                  \
@@ -54,6 +55,7 @@ ENV \
     PHPFPM_CLEAR_ENV="yes"                  \
     PHPFPM_ENABLE_OPCACHE="true"            \   
     KEEPALIVE_TIMEOUT="5"                   \
+    KEEPALIVE_REQUESTS="1000"               \
     ENABLE_CROND="true"
 
 EXPOSE 80
