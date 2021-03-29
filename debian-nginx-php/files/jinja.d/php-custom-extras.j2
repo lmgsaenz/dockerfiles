@@ -2,9 +2,7 @@
 short_open_tag = On
 {% endif %}{% endif %}
 
-{% if PHP_MEM_LIMIT is defined %}
-memory_limit = {{ PHP_MEM_LIMIT }}
-{% elif PHPFPM_MEM_LIMIT is defined %}
+{% if PHPFPM_MEM_LIMIT is defined %}
 memory_limit = {{ PHPFPM_MEM_LIMIT }}
 {% endif %}
 
@@ -36,5 +34,10 @@ display_startup_errors = Off
 max_execution_time = {{ PHP_MAX_EXECUTION_TIME }}
 {% endif %}
 
-log_errors = {% if PHP_LOG_ERRORS is defined %} {{ PHP_LOG_ERRORS }} {% else %}  {{ PHPFPM_LOG_ERRORS }} {% endif %}
-error_log = {% if PHP_ERROR_LOG_PATH is defined %} {{ PHP_ERROR_LOG_PATH }} {% else %} {{ PHPFPM_ERROR_LOG_PATH }} {% endif %}
+{% if PHPFPM_LOG_ERRORS is defined %}
+log_errors =  {{ PHPFPM_LOG_ERRORS }}
+{% endif %}
+
+{% if PHPFPM_ERROR_LOG_PATH is defined %}
+error_log = {{ PHPFPM_ERROR_LOG_PATH }} 
+{% endif %}

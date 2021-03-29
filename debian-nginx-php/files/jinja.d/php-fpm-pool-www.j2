@@ -1,5 +1,6 @@
 [www]
 user = www-data
+
 group = www-data
 
 listen = /var/run/php{{ PHP_VERSION }}-fpm.sock
@@ -11,19 +12,22 @@ listen.owner = www-data
 listen.group = www-data
 
 request_slowlog_timeout = {{ PHPFPM_REQUEST_SLOW_TIMEOUT|default("5s") }}
+
 slowlog = {{ PHPFPM_REQUEST_SLOW_PATH|default("/var/log/php-fpm/slowlog.log") }}
 
 pm = {{ PHPFPM_PROC_MANAGER }}
 
 pm.max_children = {{ PHPFPM_MAX_CHILDREN }}
 
+{% if 'dynamic' in PHPFPM_PROC_MANAGER %}
 pm.start_servers = {{ PHPFPM_START_SERVERS }}
-
 pm.min_spare_servers = {{ PHPFPM_MIN_SPARE_SERVERS }}
-
 pm.max_spare_servers = {{ PHPFPM_MAX_SPARE_SERVER }}
+{% endif %}
 
+{% if 'ondemand' in PHPFPM_PROC_MANAGER %}
 pm.process_idle_timeout = {{ PHPFPM_PROC_IDLE_TIMEOUT }}
+{% endif %}
 
 pm.max_requests = {{ PHPFPM_MAX_REQUESTS }}
 
@@ -45,7 +49,7 @@ php_admin_flag[log_errors] = {{ PHPFPM_LOG_ERRORS }}
 
 php_admin_value[memory_limit] = {{ PHPFPM_MEM_LIMIT }}
 
-php_admin_value[max_execution_time] = {{ PHP_MAX_EXEC_TIME }}
+php_admin_value[max_execution_time] = {{ PHP_MAX_EXECUTION_TIME }}
 
 php_admin_value[max_input_vars] = {{ PHP_MAX_INPUT_VARS }}
 
