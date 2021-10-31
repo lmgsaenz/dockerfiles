@@ -1,6 +1,6 @@
 FROM alpine:3.14
 
-Maintainer Luis Mario
+Maintainer lmgsaenz
 
 ENV TERRAFORM_URL="https://releases.hashicorp.com/terraform" 
 
