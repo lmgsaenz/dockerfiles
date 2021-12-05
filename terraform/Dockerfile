@@ -4,7 +4,7 @@ MAINTAINER lmgsaenz
 
 ENV ARCH="darwin_arm64"                                                                                                           \
   TERRAFORM_URL="https://releases.hashicorp.com/terraform"                                                                        \
-  TERRAFORM_VER="1.0."
+  TERRAFORM_VER="1.1."
 
 RUN apk add --no-cache --virtual .build-deps curl jq unzip outils-sha256                                                          \
   && TERRAFORM_VERSION=$(                                                                                                         \
