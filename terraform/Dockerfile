@@ -1,8 +1,6 @@
 FROM alpine:3.14
 
 Maintainer lmgsaenz
-  
-
 
 ENV ARCH="darwin_arm64"                                                                                                           \
   TERRAFORM_URL="https://releases.hashicorp.com/terraform"                                                                        \
